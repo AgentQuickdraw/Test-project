@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+    <head>
+        <link rel="stylesheet" href="styles.css">
+        <title>HMD Client</title>
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap');
+
+            * {
+                font-family: "Source Sans 3", sans-serif;
+                font-optical-sizing: auto;
+                font-weight: 400;
+                font-style: normal;
+            }
+
+            body {
+                display: flex;
+                flex-direction: row;
+                gap: 25px;
+            }
+
+            .datesdiv {
+                background-color: rgb(216, 216, 216);
+                border-radius: 20px;
+                padding: 10px;
+                width: fit-content;
+            }
+
+            textarea {
+                width: 20vw;
+                height: 12.5vh;
+            }
+
+            .radiogroup {
+                display: flex;
+                gap: 15px;
+            }
+
+            .radiogroup label {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                padding: 4px;
+                border: 1px rgb(138, 138, 138);
+                border-style: solid;
+                border-radius: 10px;
+            }
+
+            #checkbox-award {
+                transform: scale(1.25);
+            }
+
+            #copyspreadsheet-button {
+                all: unset;
+                cursor: pointer;
+            }
+
+        </style>
+    </head>
+    <body>
+        <div class="datesdiv">
+            <h2>Service Medal Dates</h2>
+            <p class="date-item" data-offset="4">4 Months Before Today:</p>
+            <p class="date-item" data-offset="8">8 Months Before Today:</p>
+            <p class="date-item" data-offset="12">12 Months Before Today:</p>
+            <h2>Service Cross Dates</h2>
+            <p class="date-item" data-offset="16">16 Months Before Today:</p>
+            <p class="date-item" data-offset="20">20 Months Before Today:</p>
+            <p class="date-item" data-offset="24">24 Months Before Today:</p>
+            <h2>Veteran Medal Dates</h2>
+            <p class="date-item" data-offset="28">28 Months Before Today:</p>
+            <p class="date-item" data-offset="32">32 Months Before Today:</p>
+            <p class="date-item" data-offset="36">36 Months Before Today:</p>
+            <h2>Veteran Cross Dates</h2>
+            <p class="date-item" data-offset="40">40 Months Before Today:</p>
+            <p class="date-item" data-offset="44">44 Months Before Today:</p>
+            <p class="date-item" data-offset="48">48 Months Before Today:</p>
+
+        </div>
+        <section>
+            <div class="datesdiv">
+                <h2>Honour Log Generator</h2>
+                <form id="logform">
+
+                    <label for="usernameInput">
+                        Username: <input type="text" id="username-input" name="usernameInput">    
+                    </label> <br><br>
+
+                    <label for="linkInput">
+                        Roblox Profile Link: <input type="text" id="link-input" name="linkInput">    
+                    </label> <br><br>
+
+                    <div class="radiogroup">
+                        <label for="medal-asm">
+                            <input type="radio" name="medalRadio" id="medal-asm" value="Army Service Medal">
+                            Service Medal
+                        </label>
+                        <label for="medal-avc">
+                            <input type="radio" name="medalRadio" id="medal-avc" value="Army Service Cross">
+                            Service Cross
+                        </label>
+                        <label for="medal-rec">
+                            <input type="radio" name="medalRadio" id="medal-rec" value="Army Veteran Medal">
+                            Veteran Medal
+                        </label>
+                        <label for="medal-wag">
+                            <input type="radio" name="medalRadio" id="medal-wag" value="Army Veteran Cross">
+                            Veteran Cross
+                        </label>
+                    </div> <br><br>
+
+                    <div class="radiogroup">
+                        <label for="clasp1">
+                            <input type="radio" name="claspRadio" id="clasp1" value="Bronze">
+                            Bronze
+                        </label>
+                        <label for="clasp2">
+                            <input type="radio" name="claspRadio" id="clasp2" value="Silver">
+                            Silver
+                        </label>
+                        <label for="clasp3">
+                            <input type="radio" name="claspRadio" id="clasp3" value="Gold">
+                            Gold
+                        </label>
+                    </div> <br><br>
+
+                    <label for="awardedCheckbox">
+                        Awarded: <input type="checkbox" id="checkbox-award" name="awardedCheckbox">
+                    </label> <br><br>
+                    
+    
+                    <label for="reasonInput">
+                        Reason: <input type="text" id="reason-input" name="reasonInput">    
+                    </label> <br><br>
+
+
+                    <input type="submit" value="Submit">
+                    <input type="button" value="Clear" id="clearbutton">
+
+                    <h3>Output:</h3>
+                    <textarea id="logarea"></textarea>
+                </form>
+            </div>
+            <br>
+            <br>
+            
+            <div class="datesdiv">
+                <button id="copyspreadsheet-button">
+                    <h2>Quick Spreadsheet Copy</h2>
+                </button>
+            </div>
+        </section>
+        
+
+
+    </body>
+    <script>
+        const today = new Date();
+        function formatDate(inst) {
+            const date = inst.getDate();
+            const month = inst.getMonth() + 1;
+            const year = inst.getFullYear();
+            return `${date}/${month}/${year}`;
+        }
+
+        document.querySelectorAll('.date-item').forEach(p => {
+            const monthsBack = parseInt(p.getAttribute('data-offset'), 10);
+            const pastDate = new Date(today.getFullYear(), today.getMonth() - monthsBack, 1);
+            const lastDay = new Date(pastDate.getFullYear(), pastDate.getMonth() + 1, 0).getDate();
+            pastDate.setDate(Math.min(today.getDate(), lastDay));
+        
+            const formatted =  formatDate(pastDate);
+            p.textContent += ` ${formatted}`;
+        });
+
+
+        let spreadsheet_final = "";
+
+        document.getElementById("clearbutton").addEventListener("click", function() {
+            document.getElementById("logarea").value = "";
+            document.getElementById("logform").reset();
+            spreadsheet_final = "";
+        });
+
+        document.getElementById("logform").addEventListener("submit", function(event) {
+            event.preventDefault();
+            printlog();
+        });
+
+
+        document.getElementById("copyspreadsheet-button").addEventListener("click", function() {
+            if (spreadsheet_final) navigator.clipboard.writeText(spreadsheet_final);
+        });
+
+        function printlog() {
+            let logArray = [
+                "Roblox Username: " + document.getElementById("username-input").value,
+                "Roblox Profile link: " + document.getElementById("link-input").value,
+                "Medal Applying For: ",
+                "Status: "
+            ];
+        
+        
+            if (document.getElementById("medal-asm").checked) {
+                if (document.getElementById("clasp1").checked) {
+                    logArray[2] += "Army Service Medal - (4 Months Service)";
+                                } else if (document.getElementById("clasp2").checked) {
+                    logArray[2] += "Army Service Medal - (8 Months Service)";
+                                } else if (document.getElementById("clasp3").checked) {
+                    logArray[2] += "Army Service Medal - (12 Months Service)";
+                                }
+            } else if (document.getElementById("medal-avc").checked) {
+                if (document.getElementById("clasp1").checked) {
+                    logArray[2] += "Army Service Cross - (16 Months Service)";
+                                } else if (document.getElementById("clasp2").checked) {
+                    logArray[2] += "Army Service Cross - (20 Months Service)";
+                                } else if (document.getElementById("clasp3").checked) {
+                    logArray[2] += "Army Service Cross - (24 Months Service)";
+                                }
+            } else if (document.getElementById("medal-rec").checked) {
+                if (document.getElementById("clasp1").checked) {
+                    logArray[2] += "Army Veteran Medal - (28 Months Service)";
+                                } else if (document.getElementById("clasp2").checked) {
+                    logArray[2] += "Army Veteran Medal - (32 Months Service)";
+                                } else if (document.getElementById("clasp3").checked) {
+                    logArray[2] += "Army Veteran Medal - (36 Months Service)";
+                                }
+            } else if (document.getElementById("medal-wag").checked) {
+                if (document.getElementById("clasp1").checked) {
+                    logArray[2] += "Army Veteran Cross - (40 Months Service)";
+                                } else if (document.getElementById("clasp2").checked) {
+                    logArray[2] += "Army Veteran Cross - (44 Months Service)";
+                                } else if (document.getElementById("clasp3").checked) {
+                    logArray[2] += "Army Veteran Cross - (48 Months Service)";
+                                }
+            }
+
+        
+        
+            if (document.getElementById("checkbox-award").checked) {
+                logArray[3] += "Awarded";
+            } else {
+                logArray[3] += "Rejected";
+            }
+        
+            const reason = document.getElementById("reason-input").value;
+            if (reason.trim() !== "") {
+                logArray[3] += `, ${reason.trim()}`;
+            } else if (document.getElementById("checkbox-award").checked) {
+                logArray[3] += ",";
+            }
+        
+            // Tabs preserve the blank dropdown columns when pasted into Google Sheets.
+            // A: username, B/C: empty, D: profile, E: medal, F: service length, G: date, H/I: empty.
+            const selectedMedal = document.querySelector('input[name="medalRadio"]:checked');
+            const now = new Date();
+            const formattedDate = [
+                String(now.getDate()).padStart(2, "0"),
+                String(now.getMonth() + 1).padStart(2, "0"),
+                now.getFullYear()
+            ].join("-");
+            const selectedClasp = document.querySelector('input[name="claspRadio"]:checked');
+            const medalBaseMonths = {"medal-asm": 4, "medal-avc": 16, "medal-rec": 28, "medal-wag": 40};
+            const claspExtraMonths = {"clasp1": 0, "clasp2": 4, "clasp3": 8};
+            const months = selectedMedal && selectedClasp
+                ? medalBaseMonths[selectedMedal.id] + claspExtraMonths[selectedClasp.id]
+                : null;
+            spreadsheet_final = [
+                document.getElementById("username-input").value,
+                "", "",
+                document.getElementById("link-input").value,
+                selectedMedal ? selectedMedal.value : "",
+                months === null ? "" : `${months} Months`,
+                formattedDate,
+                "", ""
+            ].join("\t");
+        
+        
+        
+            document.getElementById("logarea").value = logArray.join("\n");
+        
+
+        }
+
+
+    </script>
+</html>
